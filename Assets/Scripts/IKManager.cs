@@ -13,13 +13,8 @@ public class IKManager : MonoBehaviour
     
     public Joint m_root;
     public Joint m_end;
-    //public GameObject m_objetivo;
-    //Si en vez de un objeto target, se quiere mover a un punto determinado que lo de el usuario
-    // public float xObjetivo = 0;
-    // public float yObjetivo = 0;
-    // public float zObjetivo = 0;
     public GameObject m_objetivo;
-    public float _toleranciaError = 0.05f; //La diferencia mínima que puede haber entre la punta del brazo y el objetivo para considerar rotar las artículaciones (desplazar el brazo) (parámetro que determina el punto en el cual el compresor va a empezar actuar, si la señal rebasa el punto --> comienza a actuar)
+    public float _toleranciaError = 0.05f; //La diferencia mínima que puede haber entre la punta del brazo y el objetivo para considerar rotar las artículaciones (desplazar el brazo)
     public float _toleranciaDiferenciaErrores; // = 0.001f; //La diferencia absoluta mínima que puede haber entre el error obtenido en un frame pasado y el error del actual para considerar seguir acercandose al objetivo o pasar al siguiente (porque el brazo no se está moviendo --> diferencia se acerca a 0)
     public float _intentosAntesDeSiguienteObjetivo; //= 400f; // Cuantas veces se puede no cumplir la _toleranciaDiferenciaErrores antes de pasar al siguiente objetivo
     public int pasos = 5;
@@ -124,13 +119,6 @@ public class IKManager : MonoBehaviour
         else
         {
             //TODO: Cortar animación/funcionamiento brazo
-            // var animator = this.GetComponent<Animator>();
-            // animator.StopPlayback();
-            //Application.Quit();
-            if( UnityEditor.EditorApplication.isPlaying )
-            {
-                UnityEditor.EditorApplication.isPlaying = false;
-            }
         }
     }
 }
