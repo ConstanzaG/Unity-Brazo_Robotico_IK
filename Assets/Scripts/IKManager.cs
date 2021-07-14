@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,10 +14,10 @@ public class IKManager : MonoBehaviour
     public Joint m_root;
     public Joint m_end;
     public GameObject m_objetivo;
-    public float _toleranciaError = 0.05f; //La diferencia mínima que puede haber entre la punta del brazo y el objetivo para considerar rotar las artículaciones (desplazar el brazo)
+    public float _toleranciaError = 0.05f; //(umbral) La diferencia mínima que puede haber entre la punta del brazo y el objetivo para considerar rotar las artículaciones (desplazar el brazo) (parámetro que determina el punto en el cual el compresor va a empezar actuar, si la señal rebasa el punto --> comienza a actuar)
     public float _toleranciaDiferenciaErrores; // = 0.001f; //La diferencia absoluta mínima que puede haber entre el error obtenido en un frame pasado y el error del actual para considerar seguir acercandose al objetivo o pasar al siguiente (porque el brazo no se está moviendo --> diferencia se acerca a 0)
     public float _intentosAntesDeSiguienteObjetivo; //= 400f; // Cuantas veces se puede no cumplir la _toleranciaDiferenciaErrores antes de pasar al siguiente objetivo
-    public int pasos = 5;
+    public int _factorCorreccion = 5;
     public float velocidad = 10f;
 
     private int _contadorNoCambios = 0;
@@ -33,7 +33,7 @@ public class IKManager : MonoBehaviour
     // mediante derivada por deficion, que es, cuanto varia la distancia desde la articulación del
     // origen hasta el objetivo cuando se aplica una pequeña rotación al m_root (si origen rota 20°, final tambien lo hace):
     /*
-        pendiente = ( distancia_con_rotacion(final, objetivo) + distancia_original(final, objetivo) ) / diferencia_angulo
+        pendiente = ( distancia_con_rotacion(final, objetivo) - distancia_original(final, objetivo) ) / diferencia_angulo
     */
     private float calcularPendienteArticulaciones(Joint _articulacion)
     {
@@ -69,12 +69,12 @@ public class IKManager : MonoBehaviour
         }
         if(error > _toleranciaError && _contadorNoCambios < _intentosAntesDeSiguienteObjetivo)
         {   
-            for(int i=0; i<pasos; ++i)
+            for(int i=0; i<_factorCorreccion; ++i)
             {
                 while (articulacionActual != null)
                 {
                     float pendiente = calcularPendienteArticulaciones(articulacionActual);
-                    articulacionActual.Rotar(-pendiente * velocidad);
+                    articulacionActual.Rotar(-pendiente * velocidad );
                     articulacionActual = articulacionActual.GetChild();
                 }
             }
@@ -88,7 +88,6 @@ public class IKManager : MonoBehaviour
 
     void Start()
     {
-        //this.m_objetivo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         ObtenerNuevoObjetivo();
     }
 
@@ -118,7 +117,7 @@ public class IKManager : MonoBehaviour
         }
         else
         {
-            //TODO: Cortar animación/funcionamiento brazo
+            //Cortar animación/funcionamiento del brazo
         }
     }
 }
